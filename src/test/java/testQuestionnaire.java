@@ -50,5 +50,29 @@ public class testQuestionnaire {
             e.printStackTrace();
         };
         Assert.assertTrue(driver.getTitle().contains("All Questionnaire"));
+
+        // Edit Questionnaire
+        driver.findElement(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/button/i")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/ul/li[1]/a"))).click();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        };
+        driver.findElement(By.xpath("//*[@id=\"question_name\"]")).clear();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"question_name\"]"))).sendKeys("Update Questionnaire name");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/form/div[3]/button"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/form/div[3]/div/div[2]/div/div[1]/div[1]"))).click();
+        driver.findElement(By.xpath("//*[@id=\"question_2\"]/div/div/div/button")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"question_2\"]/div/div/div[1]/ul/li[36]"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/form/div[4]/a[2]"))).click();
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        };
+        Assert.assertTrue(driver.getTitle().contains("All Questionnaire"));
+
     }
 }
