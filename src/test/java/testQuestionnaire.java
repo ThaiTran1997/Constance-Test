@@ -15,7 +15,7 @@ import  java.lang.IllegalArgumentException;
 public class testQuestionnaire {
     WebDriver driver;
 
-    @Test
+    @Test()
     public void createQuestionnaire() {
         testLogin Login = new testLogin();
         driver = Login.setUp();
@@ -86,8 +86,47 @@ public class testQuestionnaire {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"mcssc_0\"]"))).click();
         driver.findElement(By.xpath("//*[@id=\"mcssc_1\"]")).click();
         driver.findElement(By.xpath("//*[@id=\"exampleModal\"]/div/div/div[3]/button[2]")).click();
-        System.out.println(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[1]/div/div/div[2]"))).getText());
         Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[1]/div/div/div[2]"))).getText().contains("Assigned Successfully"));
     }
+    @Test()
+    public void unassignTeam(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/button"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/ul/li[3]/a"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"mcssc_0\"]"))).click();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"mcssc_1\"]"))).click();
+        driver.findElement(By.xpath("//*[@id=\"exampleModal\"]/div/div/div[3]/button[2]")).click();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[1]/div/div/div[2]"))).getText().contains("Assigned Successfully"));
 
+    }
+    @Test()
+    public void publishQuestionnaire(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/button"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/ul/li[2]/a"))).click();
+        Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[1]/div/div/div[2]"))).getText().contains("Published Successfully"));
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/button/i"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/ul/li[2]/a"))).click();
+        Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[1]/div/div/div[2]"))).getText().contains("Unpublished Successfully"));
+    }
 }
