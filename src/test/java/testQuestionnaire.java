@@ -14,7 +14,7 @@ import  java.lang.IllegalArgumentException;
 
 public class testQuestionnaire {
     WebDriver driver;
-    @Test()
+    @Test
     public void createQuestionnaire() {
         testLogin Login = new testLogin();
         driver = Login.setUp();
@@ -76,6 +76,15 @@ public class testQuestionnaire {
         }
         Assert.assertTrue(driver.getTitle().contains("All Questionnaire"));
     }
+    // Search Questionnaire
+    @Test
+    public void searchQuestionnaire(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        String questionnaireName = driver.findElement(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[2]")).getText();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[2]/div/div/input"))).sendKeys(questionnaireName);
+        Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[2]"))).getText().contains(questionnaireName));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[2]/div/div/input"))).clear();
+    }
     // Assign Team
     @Test(dependsOnMethods = "createQuestionnaire")
     public void assignTeam(){
@@ -87,6 +96,7 @@ public class testQuestionnaire {
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"exampleModal\"]/div/div/div[3]/button[2]"))).click();
         Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[1]/div/div/div[2]"))).getText().contains("Assigned Successfully"));
     }
+    // Unassign Team
     @Test(dependsOnMethods = "assignTeam")
     public void unassignTeam(){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
@@ -96,12 +106,13 @@ public class testQuestionnaire {
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"mcssc_1\"]"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"exampleModal\"]/div/div/div[3]/button[2]"))).click();
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[1]/div/div/div[2]"))).getText().contains("Assigned Successfully"));
     }
+    // Publish/Unpublish Questionnaire
     @Test(dependsOnMethods = "unassignTeam")
     public void publishQuestionnaire(){
         try {
@@ -131,6 +142,7 @@ public class testQuestionnaire {
     @Test(dependsOnMethods = "publishQuestionnaire")
     public void deleteQuestionnaire(){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        // Delete Questionnaire which was assigned to teams
         assignTeam();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/button"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/ul/li[4]/a"))).click();
@@ -140,6 +152,7 @@ public class testQuestionnaire {
             e.printStackTrace();
         }
         Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[1]/div/div/div[2]"))).getText().contains("This questionnaire is assign to a team"));
+        // Delete Questionnaire which wasn't assigned to any teams
         unassignTeam();
         try {
             Thread.sleep(1000);
@@ -154,5 +167,10 @@ public class testQuestionnaire {
             e.printStackTrace();
         }
         Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[1]/div/div/div[2]"))).getText().contains("Questionnaire Deleted Successfully"));
+    }
+    @AfterTest
+    public void tearDown() {
+        // Close the browser window when the test is finished
+        driver.quit();
     }
 }
