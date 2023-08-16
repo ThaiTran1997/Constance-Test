@@ -8,6 +8,9 @@ import org.testng.Assert;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import java.net.SocketOption;
+import java.sql.SQLOutput;
 import java.time.Duration;
 import java.lang.InterruptedException;
 import  java.lang.IllegalArgumentException;
@@ -16,6 +19,7 @@ public class testQuestionnaire {
     WebDriver driver;
     @Test
     public void createQuestionnaire() {
+        System.out.println("createQuestionnaire");
         testLogin Login = new testLogin();
         driver = Login.setUp();
         Login.testLogin();
@@ -79,6 +83,7 @@ public class testQuestionnaire {
     // Search Questionnaire
     @Test
     public void searchQuestionnaire(){
+        System.out.println("searchQuestionnaire");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         String questionnaireName = driver.findElement(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[2]")).getText();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[2]/div/div/input"))).sendKeys(questionnaireName);
@@ -88,6 +93,7 @@ public class testQuestionnaire {
     // Assign Team
     @Test(dependsOnMethods = "createQuestionnaire")
     public void assignTeam(){
+        System.out.println("assignTeam");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/button"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/ul/li[3]/a"))).click();
@@ -99,9 +105,15 @@ public class testQuestionnaire {
     // Unassign Team
     @Test(dependsOnMethods = "assignTeam")
     public void unassignTeam(){
+        System.out.println("unassignTeam");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/button"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[6]/div/ul/li[3]/a"))).click();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"mcssc_0\"]"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"mcssc_1\"]"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"exampleModal\"]/div/div/div[3]/button[2]"))).click();
@@ -115,6 +127,7 @@ public class testQuestionnaire {
     // Publish/Unpublish Questionnaire
     @Test(dependsOnMethods = "unassignTeam")
     public void publishQuestionnaire(){
+        System.out.println("publishQuestionnaire");
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
@@ -141,6 +154,7 @@ public class testQuestionnaire {
     // Delete Questionnaire
     @Test(dependsOnMethods = "publishQuestionnaire")
     public void deleteQuestionnaire(){
+        System.out.println("deleteQuestionnaire");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         // Delete Questionnaire which was assigned to teams
         assignTeam();
@@ -167,6 +181,24 @@ public class testQuestionnaire {
             e.printStackTrace();
         }
         Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/div[1]/div/div/div[2]"))).getText().contains("Questionnaire Deleted Successfully"));
+    }
+    @Test(priority = 6)
+    public void filterStatus(){
+        System.out.println("filterStatus");
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div[2]/div/button[2]"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div[2]/div/ul[2]/li[1]/a"))).click();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"root\"]/table/tbody/tr[1]/td[4]/div"))).getText().contains("Published"));
     }
     @AfterTest
     public void tearDown() {
